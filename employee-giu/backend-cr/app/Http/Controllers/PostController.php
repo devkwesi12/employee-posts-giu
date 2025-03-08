@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Models\Post;
-
+//use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Support\Facades\Gate as FacadesGate;
 
 class PostController extends Controller implements HasMiddleware
 {
@@ -67,6 +68,8 @@ class PostController extends Controller implements HasMiddleware
     public function update(Request $request, Post $post)
     {
         //
+        FacadesGate::authorize('modify', $post);
+
         $fields = $request->validate([
             "title"=> "required",
             "body"=> "required",
@@ -88,6 +91,7 @@ class PostController extends Controller implements HasMiddleware
     public function destroy(Post $post)
     {
         //
+        FacadesGate::authorize('modify', $post);
         $post->delete();
         return ['message'=>'THE POST IS now deleted'];
     }
